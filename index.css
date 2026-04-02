@@ -1,0 +1,15 @@
+body {
+   background-color: rgb(56, 56, 56);
+}
+h1 {
+     font-family: "Geologica", sans-serif;
+    font-size: 100px;
+}
+P {
+     font-family: "Geologica", sans-serif;
+    font-size: 50px;
+
+}
+button {
+         font-family: "Geologica", sans-serif;
+}
