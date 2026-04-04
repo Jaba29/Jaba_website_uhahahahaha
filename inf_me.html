@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru"><head>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jaba</title>
-    <!-- Подключаем шрифт -->
-    <link href="https://googleapis.com" rel="stylesheet">
-    
+    <title>Document</title>
     <style>
         body {
             background-color: rgb(31, 31, 31);
@@ -152,67 +150,149 @@
             <a href="./index2.html" class="nav-link">Ссылки</a>
         </div>
     </div>
+<body>
 
+<!-- КОНТЕЙНЕР ДЛЯ КАРТОЧЕК (Добавь это в свой файл) -->
 <div class="cards-wrapper">
-    <!-- Карточка 1: Проекты -->
-    <div class="inf-link" onclick="window.location.href='./inf_me.html'">
-        <img src="./images/14ojg8618rim5z.png" alt="Icon" class="inf-img">
-        <span class="inf-text">Мои проекты</span>
-        <!-- event.stopPropagation() нужен, чтобы при клике на "i" НЕ переходило по ссылке -->
-        <div class="info-icon" onclick="event.stopPropagation(); toggleModal('Здесь список всех моих текущих проектов.')">i</div>
+
+    <!-- КАРТОЧКА: Zite -->
+    <div class="inf-link" onclick="openProjectModal('Zite', '???')" style="margin-left: 840px;">
+        <img src="./images/ghghghghghghg.png" alt="Icon" class="inf-img">
+        <span class="inf-text">Zite</span>
+        <!-- Кнопка i -->
+        <div class="info-icon" onclick="event.stopPropagation(); openProjectModal('Zite', '???')">i</div>
     </div>
 
-    <!-- Карточка 2: Spotify -->
-    <!-- ЗАМЕНИ ссылку на свой профиль Spotify -->
-    <div class="inf-link" onclick="window.location.href='https://spotify.com'">
-        <img src="./images/Spotify_Primary_Logo_RGB_Green.png" alt="Icon" class="inf-img">
-        <span class="inf-text">Я в Spotify</span>
-        <div class="info-icon" onclick="event.stopPropagation(); toggleModal('можешь послушать мои треки и альбомы')">i</div>
+    <!-- КАРТОЧКА: Mililand -->
+    <div class="inf-link" onclick="openProjectModal('Mililand', 'Мой майнкрафт сервер, на данный момент закрыт')" style="margin-left: 840px;">
+        <img src="./images/1f431_3d.png" alt="Icon" class="inf-img">
+        <span class="inf-text">Mililand</span>
+        <div class="info-icon" onclick="event.stopPropagation(); openProjectModal('Mililand', 'Мой майнкрафт сервер, на данный момент закрыт')">i</div>
     </div>
+
 </div>
 
-    <!-- Карточка 1: minecraft -->
-    <div class="inf-link" onclick="window.location.href='https://ru.namemc.com/profile/Jabbka.2' EventTarget" style="margin-left: 860px; margin-top: -330px;">
-        <img src="./images/Minecraft-creeper-face.png" alt="Icon" class="inf-img">
-        <span class="inf-text">Я в Майнкрафт</span>
-        <!-- event.stopPropagation() нужен, чтобы при клике на "i" НЕ переходило по ссылке -->
-        <div class="info-icon" onclick="event.stopPropagation(); toggleModal('Это мой аккаунт в майнкрафт')">i</div>
-    </div>
 
-        <!-- Карточка 1: minigames -->
-    <div class="inf-link" onclick="window.location.href='./Minigames.html'" style="margin-left: 860px; margin-top: 30px;">
-        <img src="./images/Tetris logo.png" alt="Icon" class="inf-img">
-        <span class="inf-text">Мини игры</span>
-        <!-- event.stopPropagation() нужен, чтобы при клике на "i" НЕ переходило по ссылке -->
-        <div class="info-icon" onclick="event.stopPropagation(); toggleModal('Мини игры в которые можно поиграть если скучно')">i</div>
-    </div>
-
-    
-
-<!-- Модальное окно (остается без изменений) -->
-<div id="modalOverlay" class="modal-overlay" onclick="toggleModal()">
+<!-- МОДАЛЬНОЕ ОКНО (Оно одно на все карточки) -->
+<div id="modalOverlay" class="modal-overlay" onclick="closeProjectModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <h2>Информация</h2>
-        <p id="modalText">Текст инфо</p>
-        <button class="close-btn" onclick="toggleModal()">Закрыть</button>
+        <h2 id="p-modal-title" style="margin-top: 0; font-size: 32px; color: azure;"></h2>
+        <p id="p-modal-desc" style="font-size: 18px; line-height: 1.5; color: #ccc;"></p>
+        <button class="close-btn" onclick="closeProjectModal()">Понятно</button>
     </div>
 </div>
 
+<style>
+    /* СТИЛИ ВЗЯТЫ ТОЧНО ИЗ ТВОЕГО ПРИМЕРА */
+    .cards-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        margin-top: 50px;
+        margin-left: 30px;
+    }
 
-    <script>
-        function toggleModal(text) {
-            const modal = document.getElementById('modalOverlay');
-            const textElement = document.getElementById('modalText');
-            
-            if (text) textElement.innerText = text;
+    .inf-link {
+        display: flex;
+        align-items: center;
+        width: 700px; /* ТОТ САМЫЙ РАЗМЕР */
+        height: 150px; /* ТОТ САМЫЙ РАЗМЕР */
+        background: #444;
+        border-radius: 50px;
+        text-decoration: none;
+        padding: 0 40px;
+        box-sizing: border-box;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+        cursor: pointer;
+    }
 
-            if (modal.style.display === 'flex') {
-                modal.style.display = 'none';
-            } else {
-                modal.style.display = 'flex';
-            }
-        }
-    </script>
+    .inf-link:hover {
+        transform: scale(1.03);
+        background-color: #555;
+    }
+
+    .inf-img {
+        width: 80px;
+        height: 80px;
+        margin-right: 30px;
+        object-fit: contain;
+    }
+
+    .inf-text {
+        color: white;
+        font-size: 40px; /* КРУПНЫЙ ШРИФТ */
+        font-weight: 700;
+        flex-grow: 1;
+    }
+
+    .info-icon {
+        width: 45px;
+        height: 45px;
+        border: 2px solid white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 22px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .info-icon:hover {
+        background: white;
+        color: #333;
+    }
+
+    /* СТИЛИ МОДАЛКИ С БЛЮРОМ */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(15px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        background: #222;
+        padding: 40px;
+        border-radius: 30px;
+        border: 1px solid white;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+
+    .close-btn {
+        margin-top: 20px;
+        background: white;
+        border: none;
+        padding: 10px 30px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        font-family: 'Geologica', sans-serif;
+    }
+</style>
+
+<script>
+    function openProjectModal(title, description) {
+        document.getElementById('p-modal-title').innerText = title;
+        document.getElementById('p-modal-desc').innerText = description;
+        document.getElementById('modalOverlay').style.display = 'flex';
+    }
+
+    function closeProjectModal() {
+        document.getElementById('modalOverlay').style.display = 'none';
+    }
+</script>
 
 
-</body></html>
+
+</body>
+
+
+</html>
