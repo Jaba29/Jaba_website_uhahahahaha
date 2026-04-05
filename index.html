@@ -1,38 +1,61 @@
 <!DOCTYPE html>
-<html lang="ru"><head>
+<html lang="ru">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jaba</title>
-    <!-- Подключаем шрифт -->
     <link href="https://googleapis.com" rel="stylesheet">
     
     <style>
+        * {
+            box-sizing: border-box;
+        }
+ 
         body {
             background-color: rgb(31, 31, 31);
             font-family: 'Geologica', sans-serif;
             margin: 0;
             padding-bottom: 50px;
             color: white;
+            transition: background-color 0.3s, color 0.3s;
         }
-
+ 
+        /* Светлая тема */
+        body.light-theme {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+ 
         /* --- ВЕРХНЯЯ ПАНЕЛЬ --- */
         .header-container {
             display: flex;
             justify-content: center;
             padding-top: 20px;
             position: relative;
+            padding-left: 15px;
+            padding-right: 15px;
         }
-
+ 
         .square {
             border-radius: 20px;
-            width: 830px;
-            height: 100px;
+            width: 100%;
+            max-width: 830px;
+            height: auto;
+            min-height: 100px;
             background: rgb(143, 143, 143);
             display: flex;
             justify-content: space-evenly;
             align-items: center;
+            flex-wrap: wrap;
+            padding: 15px;
+            gap: 10px;
+            transition: background-color 0.3s;
         }
-
+ 
+        body.light-theme .square {
+            background: #e0e0e0;
+        }
+ 
         .nav-link {
             text-decoration: none;
             text-align: center;
@@ -44,51 +67,111 @@
             font-weight: 700;
             transition: transform 0.3s ease, background-color 0.3s ease;
         }
-
+ 
+        body.light-theme .nav-link {
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+ 
         .nav-link:hover {
             transform: scale(1.1);
             background-color: #ddd;
         }
-
+ 
+        /* Переключатель темы */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background: #555;
+            border: 2px solid white;
+            border-radius: 50px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.3s;
+        }
+ 
+        body.light-theme .theme-toggle {
+            background: #fff;
+            border-color: #333;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+ 
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+ 
         /* --- КОНТЕЙНЕР КАРТОЧЕК --- */
         .cards-wrapper {
             display: flex;
             flex-direction: column;
             gap: 30px;
             margin-top: 50px;
-            margin-left: 30px;
+            padding: 0 15px;
+            align-items: center;
         }
-
+ 
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 700px));
+            gap: 30px;
+            width: 100%;
+            max-width: 1500px;
+            justify-content: center;
+        }
+ 
         .inf-link {
             display: flex;
-            align-items: center; /* Все в один ряд по центру */
-            width: 700px;
-            height: 150px; /* Уменьшил высоту для аккуратности */
+            align-items: center;
+            width: 100%;
+            max-width: 700px;
+            height: 150px;
             background: #444;
             border-radius: 50px;
             text-decoration: none;
-            padding: 0 40px;
+            padding: 0 30px;
             box-sizing: border-box;
             transition: transform 0.3s ease, background-color 0.3s ease;
+            cursor: pointer;
         }
-
+ 
+        body.light-theme .inf-link {
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+ 
         .inf-link:hover {
             transform: scale(1.03);
             background-color: #555;
         }
-
+ 
+        body.light-theme .inf-link:hover {
+            background-color: #f0f0f0;
+        }
+ 
         .inf-img {
             width: 80px;
-            margin-right: 30px;
+            height: 80px;
+            margin-right: 20px;
+            object-fit: contain;
+            flex-shrink: 0;
         }
-
+ 
         .inf-text {
             color: white;
             font-size: 40px;
             font-weight: 700;
-            flex-grow: 1; /* Растягивает текст, чтобы кнопка (i) ушла вправо */
+            flex-grow: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-
+ 
+        body.light-theme .inf-text {
+            color: #333;
+        }
+ 
         /* --- КНОПКА ИНФОРМАЦИИ (i) --- */
         .info-icon {
             width: 40px;
@@ -102,110 +185,223 @@
             font-size: 20px;
             cursor: pointer;
             transition: 0.3s;
+            flex-shrink: 0;
         }
-
+ 
+        body.light-theme .info-icon {
+            border-color: #333;
+            color: #333;
+        }
+ 
         .info-icon:hover {
             background: white;
             color: #333;
         }
-
+ 
+        body.light-theme .info-icon:hover {
+            background: #333;
+            color: white;
+        }
+ 
         /* --- МОДАЛЬНОЕ ОКНО --- */
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px); /* Блюр фона */
+            backdrop-filter: blur(10px);
             z-index: 1000;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
-
+ 
+        body.light-theme .modal-overlay {
+            background: rgba(255, 255, 255, 0.8);
+        }
+ 
         .modal-content {
             background: #222;
             padding: 40px;
             border-radius: 30px;
             border: 1px solid white;
             max-width: 400px;
+            width: 100%;
             text-align: center;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
-
+ 
+        body.light-theme .modal-content {
+            background: #fff;
+            border-color: #333;
+            color: #333;
+        }
+ 
         .close-btn {
             margin-top: 20px;
             background: white;
+            color: black;
             border: none;
             padding: 10px 20px;
             border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
         }
+ 
+        body.light-theme .close-btn {
+            background: #333;
+            color: white;
+        }
+ 
+        /* Мобильная адаптация */
+        @media (max-width: 768px) {
+            .nav-link {
+                font-size: 20px;
+                padding: 12px 25px;
+            }
+ 
+            .inf-link {
+                height: 120px;
+                padding: 0 20px;
+                border-radius: 30px;
+            }
+ 
+            .inf-img {
+                width: 60px;
+                height: 60px;
+                margin-right: 15px;
+            }
+ 
+            .inf-text {
+                font-size: 28px;
+            }
+ 
+            .info-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
+            }
+ 
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                padding: 8px 15px;
+                font-size: 20px;
+            }
+ 
+            .cards-grid {
+                grid-template-columns: 1fr;
+                padding: 0 10px;
+            }
+        }
+ 
+        @media (max-width: 480px) {
+            .nav-link {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+ 
+            .inf-link {
+                height: 100px;
+                border-radius: 25px;
+            }
+ 
+            .inf-img {
+                width: 50px;
+                height: 50px;
+                margin-right: 12px;
+            }
+ 
+            .inf-text {
+                font-size: 22px;
+            }
+ 
+            .info-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 16px;
+            }
+ 
+            .modal-content {
+                padding: 30px 20px;
+            }
+        }
     </style>
 </head>
 <body>
-
+ 
+    <!-- Переключатель темы -->
+    <div class="theme-toggle" onclick="toggleTheme()">🌓</div>
+ 
     <!-- Верхняя панель -->
     <div class="header-container">
         <div class="square">
             <a href="./index.html" class="nav-link">Главная</a>
             <a href="./meme.html" class="nav-link">Мемы</a>
-            <a href="./index2.html" class="nav-link">Ссылки</a>
+            <a href="./Liks.html" class="nav-link">Ссылки</a>
         </div>
     </div>
-
-<div class="cards-wrapper">
-    <!-- Карточка 1: Проекты -->
-    <div class="inf-link" onclick="window.location.href='./inf_me.html'">
-        <img src="./images/14ojg8618rim5z.png" alt="Icon" class="inf-img">
-        <span class="inf-text">Мои проекты</span>
-        <!-- event.stopPropagation() нужен, чтобы при клике на "i" НЕ переходило по ссылке -->
-        <div class="info-icon" onclick="event.stopPropagation(); toggleModal('Здесь список всех моих текущих проектов.')">i</div>
+ 
+    <div class="cards-wrapper">
+        <div class="cards-grid">
+            <!-- Карточка 1: Проекты -->
+            <div class="inf-link" onclick="window.location.href='./inf_me.html'">
+                <img src="./images/14ojg8618rim5z.png" alt="Icon" class="inf-img">
+                <span class="inf-text">Мои проекты</span>
+                <div class="info-icon" onclick="event.stopPropagation(); toggleModal('Здесь список всех моих текущих проектов.')">i</div>
+            </div>
+ 
+            <!-- Карточка 2: Spotify -->
+            <div class="inf-link" onclick="window.location.href='https://spotify.com'">
+                <img src="./images/Spotify_Primary_Logo_RGB_Green.png" alt="Icon" class="inf-img">
+                <span class="inf-text">Я в Spotify</span>
+                <div class="info-icon" onclick="event.stopPropagation(); toggleModal('можешь послушать мои треки и альбомы')">i</div>
+            </div>
+ 
+            <!-- Карточка 3: Minecraft -->
+            <div class="inf-link" onclick="window.location.href='https://ru.namemc.com/profile/Jabbka.2'">
+                <img src="./images/Minecraft-creeper-face.png" alt="Icon" class="inf-img">
+                <span class="inf-text">Я в Майнкрафт</span>
+                <div class="info-icon" onclick="event.stopPropagation(); toggleModal('Это мой аккаунт в майнкрафт')">i</div>
+            </div>
+ 
+            <!-- Карточка 4: Minigames -->
+            <div class="inf-link" onclick="window.location.href='./Minigames.html'">
+                <img src="./images/Tetris logo.png" alt="Icon" class="inf-img">
+                <span class="inf-text">Мини игры</span>
+                <div class="info-icon" onclick="event.stopPropagation(); toggleModal('Мини игры в которые можно поиграть если скучно')">i</div>
+            </div>
+        </div>
     </div>
-
-    <!-- Карточка 2: Spotify -->
-    <!-- ЗАМЕНИ ссылку на свой профиль Spotify -->
-    <div class="inf-link" onclick="window.location.href='https://spotify.com'">
-        <img src="./images/Spotify_Primary_Logo_RGB_Green.png" alt="Icon" class="inf-img">
-        <span class="inf-text">Я в Spotify</span>
-        <div class="info-icon" onclick="event.stopPropagation(); toggleModal('можешь послушать мои треки и альбомы')">i</div>
+ 
+    <!-- Модальное окно -->
+    <div id="modalOverlay" class="modal-overlay" onclick="toggleModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2>Информация</h2>
+            <p id="modalText">Текст инфо</p>
+            <button class="close-btn" onclick="toggleModal()">Закрыть</button>
+        </div>
     </div>
-</div>
-
-    <!-- Карточка 1: minecraft -->
-    <div class="inf-link" onclick="window.location.href='https://ru.namemc.com/profile/Jabbka.2' EventTarget" style="margin-left: 860px; margin-top: -330px;">
-        <img src="./images/Minecraft-creeper-face.png" alt="Icon" class="inf-img">
-        <span class="inf-text">Я в Майнкрафт</span>
-        <!-- event.stopPropagation() нужен, чтобы при клике на "i" НЕ переходило по ссылке -->
-        <div class="info-icon" onclick="event.stopPropagation(); toggleModal('Это мой аккаунт в майнкрафт')">i</div>
-    </div>
-
-        <!-- Карточка 1: minigames -->
-    <div class="inf-link" onclick="window.location.href='./Minigames.html'" style="margin-left: 860px; margin-top: 30px;">
-        <img src="./images/Tetris logo.png" alt="Icon" class="inf-img">
-        <span class="inf-text">Мини игры</span>
-        <!-- event.stopPropagation() нужен, чтобы при клике на "i" НЕ переходило по ссылке -->
-        <div class="info-icon" onclick="event.stopPropagation(); toggleModal('Мини игры в которые можно поиграть если скучно')">i</div>
-    </div>
-
-    
-
-<!-- Модальное окно (остается без изменений) -->
-<div id="modalOverlay" class="modal-overlay" onclick="toggleModal()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <h2>Информация</h2>
-        <p id="modalText">Текст инфо</p>
-        <button class="close-btn" onclick="toggleModal()">Закрыть</button>
-    </div>
-</div>
-
-
+ 
     <script>
+        // Загрузка сохраненной темы
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+        }
+ 
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            const isLight = document.body.classList.contains('light-theme');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        }
+ 
         function toggleModal(text) {
             const modal = document.getElementById('modalOverlay');
             const textElement = document.getElementById('modalText');
             
             if (text) textElement.innerText = text;
-
+ 
             if (modal.style.display === 'flex') {
                 modal.style.display = 'none';
             } else {
@@ -213,6 +409,6 @@
             }
         }
     </script>
-
-
-</body></html>
+ 
+</body>
+</html>
