@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Личный чат</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="chat.css" />
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-bg">
+    <div class="auth-orb orb1"></div>
+    <div class="auth-orb orb2"></div>
+    <div class="auth-orb orb3"></div>
+  </div>
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="logo-icon">◈</div>
+      <span class="logo-text">CIPHER</span>
+    </div>
+    <p class="auth-sub">Введи код доступа</p>
+    <div class="code-inputs">
+      <input type="password" id="code-input" class="code-field" placeholder="••••••••••••" maxlength="32" autocomplete="off" />
+      <button class="enter-btn" onclick="Auth.login()">→</button>
+    </div>
+    <div id="auth-error" class="auth-error"></div>
+    <p class="auth-hint">Код выдаётся лично</p>
+  </div>
+</div>
+
+<!-- MAIN CHAT APP -->
+<div id="app" class="app hidden">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">◈ CIPHER</div>
+      <button class="sidebar-close" onclick="UI.toggleSidebar()">✕</button>
+    </div>
+
+    <!-- Profile card -->
+    <div class="profile-card" id="profile-card">
+      <div class="avatar-wrap">
+        <div class="avatar" id="sidebar-avatar" onclick="UI.openProfileEditor()">
+          <span id="sidebar-avatar-text">?</span>
+          <img id="sidebar-avatar-img" class="hidden" />
+          <div class="avatar-overlay">✎</div>
+        </div>
+        <div class="status-dot" id="my-status-dot"></div>
+      </div>
+      <div class="profile-info">
+        <div class="profile-name" id="sidebar-name">Загрузка...</div>
+        <div class="profile-bio" id="sidebar-bio">Нет статуса</div>
+      </div>
+      <button class="edit-profile-btn" onclick="UI.openProfileEditor()">✎</button>
+    </div>
+
+    <!-- Nav tabs -->
+    <nav class="sidebar-nav">
+      <button class="nav-btn active" data-tab="chat" onclick="UI.switchTab('chat')">
+        <span class="nav-icon">💬</span><span>Чат</span>
+      </button>
+      <button class="nav-btn" data-tab="media" onclick="UI.switchTab('media')">
+        <span class="nav-icon">🖼</span><span>Медиа</span>
+      </button>
+      <button class="nav-btn" data-tab="music" onclick="UI.switchTab('music')">
+        <span class="nav-icon">🎵</span><span>Музыка</span>
+      </button>
+      <button class="nav-btn" data-tab="files" onclick="UI.switchTab('files')">
+        <span class="nav-icon">📁</span><span>Файлы</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="Auth.logout()">Выйти</button>
+    </div>
+  </aside>
+
+  <!-- MAIN AREA -->
+  <main class="main">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <button class="menu-btn" onclick="UI.toggleSidebar()">☰</button>
+      <div class="topbar-info">
+        <div class="topbar-name" id="topbar-name">Чат</div>
+        <div class="topbar-status" id="partner-status">● Загрузка...</div>
+      </div>
+      <div class="topbar-avatar">
+        <div class="t-avatar" id="topbar-avatar">?</div>
+      </div>
+    </header>
+
+    <!-- TABS CONTENT -->
+
+    <!-- CHAT TAB -->
+    <div id="tab-chat" class="tab-content active">
+      <div class="messages-area" id="messages-area">
+        <div class="messages-inner" id="messages-inner">
+          <!-- messages rendered here -->
+        </div>
+      </div>
+
+      <!-- INPUT BAR -->
+      <div class="input-bar">
+        <button class="attach-btn" onclick="UI.openAttach()" title="Прикрепить файл">📎</button>
+        <input type="file" id="file-input" class="hidden" onchange="Chat.handleFile(this)" multiple accept="*/*" />
+        <div class="text-input-wrap">
+          <textarea id="msg-input" class="msg-input" placeholder="Сообщение..." rows="1"
+            onkeydown="Chat.onKey(event)" oninput="UI.autoResize(this)"></textarea>
+        </div>
+        <button class="voice-btn" id="voice-btn"
+          onmousedown="Voice.startCircle(event)" onmouseup="Voice.stopCircle()"
+          ontouchstart="Voice.startCircle(event)" ontouchend="Voice.stopCircle()"
+          title="Удержи для видеокружка">⬤</button>
+        <button class="audio-btn" id="audio-btn"
+          onmousedown="Voice.startAudio(event)" onmouseup="Voice.stopAudio()"
+          ontouchstart="Voice.startAudio(event)" ontouchend="Voice.stopAudio()"
+          title="Удержи для голосового">🎤</button>
+        <button class="send-btn" onclick="Chat.sendText()">➤</button>
+      </div>
+    </div>
+
+    <!-- MEDIA TAB -->
+    <div id="tab-media" class="tab-content">
+      <div class="gallery-header">Фотографии и видео</div>
+      <div class="media-grid" id="media-grid"></div>
+    </div>
+
+    <!-- MUSIC TAB -->
+    <div id="tab-music" class="tab-content">
+      <div class="gallery-header">Аудиофайлы</div>
+      <div class="music-list" id="music-list"></div>
+    </div>
+
+    <!-- FILES TAB -->
+    <div id="tab-files" class="tab-content">
+      <div class="gallery-header">Все файлы</div>
+      <div class="files-list" id="files-list"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- PROFILE EDITOR MODAL -->
+<div id="profile-modal" class="modal hidden">
+  <div class="modal-backdrop" onclick="UI.closeProfileEditor()"></div>
+  <div class="modal-card">
+    <div class="modal-title">Профиль</div>
+    <div class="modal-avatar-wrap">
+      <div class="modal-avatar" id="modal-avatar" onclick="document.getElementById('avatar-file').click()">
+        <span id="modal-avatar-text">?</span>
+        <img id="modal-avatar-img" class="hidden" />
+        <div class="avatar-overlay">📷</div>
+      </div>
+      <input type="file" id="avatar-file" class="hidden" accept="image/*" onchange="Profile.changeAvatar(this)" />
+    </div>
+    <label class="modal-label">Имя</label>
+    <input type="text" id="profile-name-input" class="modal-input" placeholder="Твоё имя" maxlength="24" />
+    <label class="modal-label">Статус</label>
+    <input type="text" id="profile-bio-input" class="modal-input" placeholder="Что у тебя нового?" maxlength="60" />
+    <label class="modal-label">Цвет акцента</label>
+    <div class="color-row">
+      <input type="color" id="accent-color" value="#a855f7" onchange="Profile.previewAccent(this.value)" />
+      <span class="color-preview" id="color-preview-text">#a855f7</span>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="UI.closeProfileEditor()">Отмена</button>
+      <button class="modal-save" onclick="Profile.save()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MEDIA LIGHTBOX -->
+<div id="lightbox" class="lightbox hidden" onclick="UI.closeLightbox()">
+  <div class="lightbox-close">✕</div>
+  <img id="lightbox-img" class="lightbox-img" />
+  <video id="lightbox-video" class="lightbox-img" controls></video>
+</div>
+
+<!-- RECORDING INDICATOR -->
+<div id="recording-indicator" class="recording-indicator hidden">
+  <div class="rec-dot"></div>
+  <span id="rec-label">Запись...</span>
+  <span id="rec-timer">0:00</span>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="config.js"></script>
+<script src="auth.js"></script>
+<script src="chat.js"></script>
+</body>
+</html>
